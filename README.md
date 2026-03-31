@@ -68,16 +68,16 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [x] Commit: `Implement list_all_as_string function in Notification repository.`
     -   [x] Write answers of your learning module's "Reflection Subscriber-1" questions in this README.
 -   **STAGE 2: Implement services and controllers**
-    -   [ ] Commit: `Create Notification service struct skeleton.`
-    -   [ ] Commit: `Implement subscribe function in Notification service.`
-    -   [ ] Commit: `Implement subscribe function in Notification controller.`
-    -   [ ] Commit: `Implement unsubscribe function in Notification service.`
-    -   [ ] Commit: `Implement unsubscribe function in Notification controller.`
-    -   [ ] Commit: `Implement receive_notification function in Notification service.`
-    -   [ ] Commit: `Implement receive function in Notification controller.`
-    -   [ ] Commit: `Implement list_messages function in Notification service.`
-    -   [ ] Commit: `Implement list function in Notification controller.`
-    -   [ ] Write answers of your learning module's "Reflection Subscriber-2" questions in this README.
+    -   [x] Commit: `Create Notification service struct skeleton.`
+    -   [x] Commit: `Implement subscribe function in Notification service.`
+    -   [x] Commit: `Implement subscribe function in Notification controller.`
+    -   [x] Commit: `Implement unsubscribe function in Notification service.`
+    -   [x] Commit: `Implement unsubscribe function in Notification controller.`
+    -   [x] Commit: `Implement receive_notification function in Notification service.`
+    -   [x] Commit: `Implement receive function in Notification controller.`
+    -   [x] Commit: `Implement list_messages function in Notification service.`
+    -   [x] Commit: `Implement list function in Notification controller.`
+    -   [x] Write answers of your learning module's "Reflection Subscriber-2" questions in this README.
 
 ## Your Reflections
 This is the place for you to write reflections:
@@ -95,3 +95,11 @@ This is the place for you to write reflections:
     Berbeda dengan Java yang mengandalkan GC dan runtime checks, Rust sejak awal memaksa aturan ownership/borrowing yang ketat. Kalau mutable global dibebaskan seperti di Java, Rust jadi rawan data race dan undefined behavior. Jadi Rust tidak melarang mutasi sepenuhnya, tapi mutasinya harus lewat wrapper yang aman seperti `RwLock`, `Mutex`, atau struktur concurrent lain (`DashMap`). Menurut saya ini trade-off yang bagus: lebih "ribet" di awal, tapi bug concurrency bisa berkurang jauh.
 
 #### Reflection Subscriber-2
+
+1. Iya, saya sempat eksplor di luar step utama tutorial, terutama lihat `src/lib.rs` dan alur wiring antar module (`controller`, `service`, `repository`, `model`). Dari situ saya belajar kalau `lib.rs` itu penting sebagai "pintu" module, jadi struktur project lebih rapi dan dependency antar bagian lebih jelas. Saya juga jadi lebih paham kenapa handler di controller dibuat tipis (hanya terima request/return response), sedangkan logic utamanya didorong ke service dan repository. Menurut saya ini enak buat maintainability, karena kalau ada perubahan logic, dampaknya lebih terlokalisasi.
+
+2. Setelah coba jalanin beberapa instance Receiver, Observer pattern terasa sangat membantu untuk nambah subscriber. Publisher tidak perlu tahu detail implementasi setiap subscriber; cukup simpan daftar subscriber dan broadcast event ke mereka. Jadi nambah subscriber baru relatif gampang, tinggal register/subscribe endpoint baru tanpa ubah banyak kode inti.
+
+    Untuk kasus spawn lebih dari satu instance Main app (publisher), menurut saya masih bisa, tapi kompleksitasnya naik dibanding nambah subscriber. Kalau subscriber banyak ke satu publisher, polanya masih lurus. Tapi kalau publisher jadi banyak, kita perlu mikirin sinkronisasi state antar publisher (misalnya data produk dan event), duplikasi notifikasi, dan source of truth-nya di mana. Jadi "bisa" ditambah, tapi perlu desain tambahan (misalnya message broker/event bus atau shared storage) supaya tetap konsisten.
+
+3. Saya sudah coba bikin test sederhana dan sedikit rapihin dokumentasi Postman collection (nama request, contoh payload, dan expected response). Buat saya ini kepakai banget. Test bantu cek regresi pas refactor kecil, jadi tidak perlu selalu test manual dari nol. Dokumentasi Postman juga mempermudah waktu demo dan kerja kelompok, karena anggota lain bisa langsung paham endpoint mana untuk subscribe/unsubscribe/receive/list tanpa harus baca kode dulu. Untuk Group Project, ini berasa menghemat waktu onboarding dan debugging.
