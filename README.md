@@ -24,7 +24,7 @@ The notification will be sent using HTTP POST request, so you need to make the r
 
 ## API Documentations
 
-You can download the Postman Collection JSON here: https://ristek.link/AdvProgWeek7Postman
+You can download the Postman Collection JSON here: (SECRET)
 
 After you download the Postman Collection, you can try the endpoints inside "BambangShop Receiver" folder.
 
@@ -59,7 +59,7 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   Open another new terminal, edit `ROCKET_PORT` in `.env` to `8003`, then execute `cargo run`.
 
 ## Mandatory Checklists (Subscriber)
--   [ ] Clone https://gitlab.com/ichlaffterlalu/bambangshop-receiver to a new repository.
+-   [x] Clone https://gitlab.com/ichlaffterlalu/bambangshop-receiver to a new repository.
 -   **STAGE 1: Implement models and repositories**
     -   [ ] Commit: `Create Notification model struct.`
     -   [ ] Commit: `Create SubscriberRequest model struct.`
@@ -67,7 +67,7 @@ You can install Postman via this website: https://www.postman.com/downloads/
     -   [ ] Commit: `Implement add function in Notification repository.`
     -   [ ] Commit: `Implement list_all_as_string function in Notification repository.`
     -   [ ] Write answers of your learning module's "Reflection Subscriber-1" questions in this README.
--   **STAGE 3: Implement services and controllers**
+-   **STAGE 2: Implement services and controllers**
     -   [ ] Commit: `Create Notification service struct skeleton.`
     -   [ ] Commit: `Implement subscribe function in Notification service.`
     -   [ ] Commit: `Implement subscribe function in Notification controller.`
