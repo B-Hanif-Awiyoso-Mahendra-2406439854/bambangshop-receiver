@@ -61,12 +61,12 @@ You can install Postman via this website: https://www.postman.com/downloads/
 ## Mandatory Checklists (Subscriber)
 -   [x] Clone https://gitlab.com/ichlaffterlalu/bambangshop-receiver to a new repository.
 -   **STAGE 1: Implement models and repositories**
-    -   [ ] Commit: `Create Notification model struct.`
-    -   [ ] Commit: `Create SubscriberRequest model struct.`
-    -   [ ] Commit: `Create Notification database and Notification repository struct skeleton.`
-    -   [ ] Commit: `Implement add function in Notification repository.`
-    -   [ ] Commit: `Implement list_all_as_string function in Notification repository.`
-    -   [ ] Write answers of your learning module's "Reflection Subscriber-1" questions in this README.
+    -   [x] Commit: `Create Notification model struct.`
+    -   [x] Commit: `Create SubscriberRequest model struct.`
+    -   [x] Commit: `Create Notification database and Notification repository struct skeleton.`
+    -   [x] Commit: `Implement add function in Notification repository.`
+    -   [x] Commit: `Implement list_all_as_string function in Notification repository.`
+    -   [x] Write answers of your learning module's "Reflection Subscriber-1" questions in this README.
 -   **STAGE 2: Implement services and controllers**
     -   [ ] Commit: `Create Notification service struct skeleton.`
     -   [ ] Commit: `Implement subscribe function in Notification service.`
@@ -85,5 +85,13 @@ This is the place for you to write reflections:
 ### Mandatory (Subscriber) Reflections
 
 #### Reflection Subscriber-1
+
+1. Menurut saya, `RwLock<Vec<Notification>>` diperlukan karena data notifikasi dipakai bareng-bareng oleh banyak request. Di aplikasi receiver ini, ada endpoint yang nambah notifikasi (write) dan ada juga endpoint yang cuma baca/list notifikasi (read). Kalau tanpa lock, bisa terjadi data race karena beberapa thread mengakses `Vec` yang sama di waktu bersamaan.
+
+    Kenapa pilih `RwLock` dan bukan `Mutex`? Karena pola aksesnya lebih sering baca daripada tulis. `RwLock` mengizinkan banyak reader berjalan paralel selama tidak ada writer, jadi throughput lebih bagus untuk endpoint list. Kalau pakai `Mutex`, baik read maupun write harus antre satu-satu, jadi lebih ketat dan bisa jadi bottleneck padahal operasi read seharusnya bisa barengan.
+
+2. Soal `lazy_static`, ini dipakai karena kita butuh state global yang diinisialisasi sekali saat runtime (misalnya `Vec` dan `DashMap`), tapi tetap aman untuk concurrency. Di Rust, `static` biasa itu harus punya nilai yang diketahui saat compile-time dan tidak boleh sembarang dimutasi karena bisa melanggar memory safety.
+
+    Berbeda dengan Java yang mengandalkan GC dan runtime checks, Rust sejak awal memaksa aturan ownership/borrowing yang ketat. Kalau mutable global dibebaskan seperti di Java, Rust jadi rawan data race dan undefined behavior. Jadi Rust tidak melarang mutasi sepenuhnya, tapi mutasinya harus lewat wrapper yang aman seperti `RwLock`, `Mutex`, atau struktur concurrent lain (`DashMap`). Menurut saya ini trade-off yang bagus: lebih "ribet" di awal, tapi bug concurrency bisa berkurang jauh.
 
 #### Reflection Subscriber-2
